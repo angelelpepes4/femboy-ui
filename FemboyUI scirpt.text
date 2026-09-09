@@ -1,0 +1,1927 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+local StarterGui = game:GetService("StarterGui")
+local CoreGui = game:GetService("CoreGui")
+local SoundService = game:GetService("SoundService")
+local Player = Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local GuiParent = Player:FindFirstChildOfClass("PlayerGui") or Player:WaitForChild("PlayerGui")
+local FemboyUI = {}
+FemboyUI.__index = FemboyUI
+local Themes = {
+    Femboy = {
+        Primary = Color3.fromRGB(255, 154, 206),
+        Secondary = Color3.fromRGB(186, 104, 186),
+        Accent = Color3.fromRGB(148, 103, 189),
+        AccentAlt = Color3.fromRGB(255, 119, 168),
+        Background = Color3.fromRGB(15, 10, 25),
+        BackgroundAlt = Color3.fromRGB(25, 16, 40),
+        Surface = Color3.fromRGB(32, 20, 52),
+        SurfaceAlt = Color3.fromRGB(42, 26, 65),
+        SurfaceHover = Color3.fromRGB(55, 35, 80),
+        Text = Color3.fromRGB(255, 230, 245),
+        TextDim = Color3.fromRGB(170, 130, 170),
+        TextMuted = Color3.fromRGB(120, 90, 120),
+        Success = Color3.fromRGB(130, 255, 180),
+        Error = Color3.fromRGB(255, 100, 130),
+        Warning = Color3.fromRGB(255, 200, 100),
+        Info = Color3.fromRGB(130, 180, 255),
+        GradientStart = Color3.fromRGB(255, 119, 168),
+        GradientMid = Color3.fromRGB(200, 100, 220),
+        GradientEnd = Color3.fromRGB(148, 103, 255),
+        Glow = Color3.fromRGB(255, 154, 206),
+        Shadow = Color3.fromRGB(5, 2, 10),
+    },
+    Midnight = {
+        Primary = Color3.fromRGB(100, 140, 255),
+        Secondary = Color3.fromRGB(80, 100, 200),
+        Accent = Color3.fromRGB(120, 80, 255),
+        AccentAlt = Color3.fromRGB(60, 180, 255),
+        Background = Color3.fromRGB(8, 8, 18),
+        BackgroundAlt = Color3.fromRGB(14, 14, 30),
+        Surface = Color3.fromRGB(20, 20, 42),
+        SurfaceAlt = Color3.fromRGB(30, 30, 55),
+        SurfaceHover = Color3.fromRGB(40, 40, 70),
+        Text = Color3.fromRGB(220, 225, 255),
+        TextDim = Color3.fromRGB(140, 145, 180),
+        TextMuted = Color3.fromRGB(90, 95, 130),
+        Success = Color3.fromRGB(100, 255, 180),
+        Error = Color3.fromRGB(255, 80, 100),
+        Warning = Color3.fromRGB(255, 200, 80),
+        Info = Color3.fromRGB(100, 180, 255),
+        GradientStart = Color3.fromRGB(100, 140, 255),
+        GradientMid = Color3.fromRGB(140, 100, 255),
+        GradientEnd = Color3.fromRGB(180, 80, 255),
+        Glow = Color3.fromRGB(100, 140, 255),
+        Shadow = Color3.fromRGB(2, 2, 8),
+    },
+    Rose = {
+        Primary = Color3.fromRGB(255, 100, 130),
+        Secondary = Color3.fromRGB(220, 60, 100),
+        Accent = Color3.fromRGB(255, 60, 100),
+        AccentAlt = Color3.fromRGB(255, 150, 170),
+        Background = Color3.fromRGB(18, 6, 10),
+        BackgroundAlt = Color3.fromRGB(30, 10, 18),
+        Surface = Color3.fromRGB(40, 15, 25),
+        SurfaceAlt = Color3.fromRGB(55, 20, 32),
+        SurfaceHover = Color3.fromRGB(70, 28, 42),
+        Text = Color3.fromRGB(255, 230, 235),
+        TextDim = Color3.fromRGB(180, 130, 140),
+        TextMuted = Color3.fromRGB(130, 90, 100),
+        Success = Color3.fromRGB(130, 255, 160),
+        Error = Color3.fromRGB(255, 80, 80),
+        Warning = Color3.fromRGB(255, 190, 80),
+        Info = Color3.fromRGB(130, 180, 255),
+        GradientStart = Color3.fromRGB(255, 100, 130),
+        GradientMid = Color3.fromRGB(255, 80, 160),
+        GradientEnd = Color3.fromRGB(255, 60, 180),
+        Glow = Color3.fromRGB(255, 100, 130),
+        Shadow = Color3.fromRGB(8, 2, 4),
+    },
+    Neon = {
+        Primary = Color3.fromRGB(0, 255, 200),
+        Secondary = Color3.fromRGB(0, 200, 160),
+        Accent = Color3.fromRGB(0, 255, 255),
+        AccentAlt = Color3.fromRGB(180, 0, 255),
+        Background = Color3.fromRGB(4, 4, 12),
+        BackgroundAlt = Color3.fromRGB(8, 8, 22),
+        Surface = Color3.fromRGB(12, 12, 32),
+        SurfaceAlt = Color3.fromRGB(18, 18, 45),
+        SurfaceHover = Color3.fromRGB(25, 25, 60),
+        Text = Color3.fromRGB(220, 255, 250),
+        TextDim = Color3.fromRGB(100, 180, 160),
+        TextMuted = Color3.fromRGB(60, 120, 100),
+        Success = Color3.fromRGB(0, 255, 130),
+        Error = Color3.fromRGB(255, 50, 80),
+        Warning = Color3.fromRGB(255, 255, 0),
+        Info = Color3.fromRGB(0, 200, 255),
+        GradientStart = Color3.fromRGB(0, 255, 200),
+        GradientMid = Color3.fromRGB(0, 200, 255),
+        GradientEnd = Color3.fromRGB(180, 0, 255),
+        Glow = Color3.fromRGB(0, 255, 200),
+        Shadow = Color3.fromRGB(0, 2, 5),
+    }
+}
+local CurrentTheme = Themes.Femboy
+local AllConnections = {}
+local AllTweens = {}
+local Util = {}
+function Util.Create(class, props, children)
+    local inst = Instance.new(class)
+    for k, v in pairs(props or {}) do
+        if k ~= "Parent" then
+            inst[k] = v
+        end
+    end
+    for _, child in pairs(children or {}) do
+        child.Parent = inst
+    end
+    if props and props.Parent then
+        inst.Parent = props.Parent
+    end
+    return inst
+end
+function Util.Tween(inst, props, dur, style, dir)
+    local tw = TweenService:Create(
+        inst,
+        TweenInfo.new(dur or 0.3, style or Enum.EasingStyle.Quint, dir or Enum.EasingDirection.Out),
+        props
+    )
+    tw:Play()
+    table.insert(AllTweens, tw)
+    return tw
+end
+function Util.Spring(inst, props, dur)
+    return Util.Tween(inst, props, dur or 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+end
+function Util.Bounce(inst, props, dur)
+    return Util.Tween(inst, props, dur or 0.6, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+end
+function Util.Elastic(inst, props, dur)
+    return Util.Tween(inst, props, dur or 0.7, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out)
+end
+function Util.Ripple(parent, x, y)
+    local circle = Util.Create("Frame", {
+        Parent = parent,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        BackgroundTransparency = 0.65,
+        Position = UDim2.new(0, x - parent.AbsolutePosition.X, 0, y - parent.AbsolutePosition.Y),
+        Size = UDim2.new(0, 0, 0, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ZIndex = parent.ZIndex + 10,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+    })
+    local maxDim = math.max(parent.AbsoluteSize.X, parent.AbsoluteSize.Y) * 2.5
+    Util.Tween(circle, {Size = UDim2.new(0, maxDim, 0, maxDim), BackgroundTransparency = 1}, 0.65)
+    task.delay(0.7, function() if circle then circle:Destroy() end end)
+end
+function Util.LerpColor(a, b, t)
+    return Color3.new(a.R + (b.R - a.R) * t, a.G + (b.G - a.G) * t, a.B + (b.B - a.B) * t)
+end
+function Util.HSVShift(color, shift)
+    local h, s, v = color:ToHSV()
+    return Color3.fromHSV((h + shift) % 1, s, v)
+end
+function Util.Connect(signal, func)
+    local conn = signal:Connect(func)
+    table.insert(AllConnections, conn)
+    return conn
+end
+function Util.Hex(color)
+    return string.format("#%02X%02X%02X", math.floor(color.R * 255), math.floor(color.G * 255), math.floor(color.B * 255))
+end
+local Sound = {}
+Sound.Enabled = true
+function Sound.Play(id, vol, pitch)
+    if not Sound.Enabled then return end
+    pcall(function()
+        local s = Instance.new("Sound")
+        s.SoundId = id
+        s.Volume = vol or 0.2
+        s.PlaybackSpeed = pitch or 1
+        s.Parent = SoundService
+        s:Play()
+        s.Ended:Connect(function() s:Destroy() end)
+    end)
+end
+function Sound.Click() Sound.Play("rbxassetid://6895079853", 0.12, 1.3) end
+function Sound.Toggle() Sound.Play("rbxassetid://6895079853", 0.1, 1.6) end
+function Sound.Notify() Sound.Play("rbxassetid://6895079853", 0.15, 0.9) end
+function Sound.Open() Sound.Play("rbxassetid://6895079853", 0.15, 0.7) end
+function Sound.Close() Sound.Play("rbxassetid://6895079853", 0.1, 0.5) end
+local Config = {}
+Config.Flags = {}
+Config.FileName = "FemboyUI_Config.json"
+Config.AutoSave = true
+Config.Callbacks = {}
+function Config.Set(key, value)
+    Config.Flags[key] = value
+    if Config.AutoSave then Config.Save() end
+    if Config.Callbacks[key] then
+        pcall(Config.Callbacks[key], value)
+    end
+end
+function Config.Get(key, default)
+    if Config.Flags[key] ~= nil then return Config.Flags[key] end
+    return default
+end
+function Config.Save()
+    pcall(function()
+        if writefile then
+            writefile(Config.FileName, HttpService:JSONEncode(Config.Flags))
+        end
+    end)
+end
+function Config.Load()
+    pcall(function()
+        if isfile and isfile(Config.FileName) then
+            Config.Flags = HttpService:JSONDecode(readfile(Config.FileName))
+        end
+    end)
+end
+local Particles = {}
+function Particles.Sparkles(parent, count)
+    local sparkles = {}
+    for i = 1, (count or 18) do
+        local sp = Util.Create("Frame", {
+            Name = "Sparkle" .. i,
+            Parent = parent,
+            BackgroundColor3 = CurrentTheme.Primary,
+            BackgroundTransparency = math.random(40, 85) / 100,
+            Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5)),
+            Position = UDim2.new(math.random(0, 1000) / 1000, 0, math.random(0, 1000) / 1000, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            ZIndex = 2,
+        }, {
+            Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+        })
+        table.insert(sparkles, sp)
+    end
+    task.spawn(function()
+        while parent and parent.Parent do
+            for _, sp in ipairs(sparkles) do
+                if sp and sp.Parent then
+                    Util.Tween(sp, {
+                        Position = UDim2.new(math.random(0, 1000) / 1000, 0, math.random(0, 1000) / 1000, 0),
+                        BackgroundTransparency = math.random(30, 92) / 100,
+                        Size = UDim2.new(0, math.random(1, 6), 0, math.random(1, 6)),
+                        BackgroundColor3 = Util.HSVShift(CurrentTheme.Primary, math.random(0, 40) / 100),
+                        Rotation = math.random(0, 360),
+                    }, math.random(18, 40) / 10)
+                end
+            end
+            task.wait(math.random(12, 28) / 10)
+        end
+    end)
+    return sparkles
+end
+function Particles.FloatingOrbs(parent, count)
+    local orbs = {}
+    for i = 1, (count or 6) do
+        local orb = Util.Create("Frame", {
+            Name = "Orb" .. i,
+            Parent = parent,
+            BackgroundColor3 = Util.LerpColor(CurrentTheme.GradientStart, CurrentTheme.GradientEnd, math.random()),
+            BackgroundTransparency = 0.88,
+            Size = UDim2.new(0, math.random(40, 100), 0, math.random(40, 100)),
+            Position = UDim2.new(math.random(5, 95) / 100, 0, math.random(5, 95) / 100, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            ZIndex = 1,
+        }, {
+            Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+        })
+        table.insert(orbs, orb)
+        task.spawn(function()
+            while orb and orb.Parent do
+                Util.Tween(orb, {
+                    Position = UDim2.new(math.random(5, 95) / 100, 0, math.random(5, 95) / 100, 0),
+                    BackgroundTransparency = math.random(80, 96) / 100,
+                    Size = UDim2.new(0, math.random(30, 120), 0, math.random(30, 120)),
+                    BackgroundColor3 = Util.HSVShift(
+                        Util.LerpColor(CurrentTheme.GradientStart, CurrentTheme.GradientEnd, math.random()),
+                        (tick() * 0.05) % 1
+                    ),
+                }, math.random(35, 70) / 10)
+                task.wait(math.random(35, 70) / 10)
+            end
+        end)
+    end
+    return orbs
+end
+local Rainbow = {}
+function Rainbow.AnimatedGradient(frame)
+    local grad = Util.Create("UIGradient", {
+        Parent = frame,
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, CurrentTheme.GradientStart),
+            ColorSequenceKeypoint.new(0.5, CurrentTheme.GradientMid),
+            ColorSequenceKeypoint.new(1, CurrentTheme.GradientEnd),
+        }),
+        Rotation = 0,
+    })
+    task.spawn(function()
+        local rot = 0
+        while grad and grad.Parent do
+            rot = (rot + 0.4) % 360
+            grad.Rotation = rot
+            local shift = (tick() * 0.08) % 1
+            pcall(function()
+                grad.Color = ColorSequence.new({
+                    ColorSequenceKeypoint.new(0, Util.HSVShift(CurrentTheme.GradientStart, shift)),
+                    ColorSequenceKeypoint.new(0.5, Util.HSVShift(CurrentTheme.GradientMid, shift)),
+                    ColorSequenceKeypoint.new(1, Util.HSVShift(CurrentTheme.GradientEnd, shift)),
+                })
+            end)
+            RunService.Heartbeat:Wait()
+        end
+    end)
+    return grad
+end
+function Rainbow.AnimatedBorder(frame, thickness)
+    local stroke = Util.Create("UIStroke", {
+        Parent = frame,
+        Thickness = thickness or 2,
+        Transparency = 0.25,
+    })
+    local sGrad = Util.Create("UIGradient", {
+        Parent = stroke,
+        Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 100, 150)),
+            ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 100)),
+            ColorSequenceKeypoint.new(0.33, Color3.fromRGB(100, 255, 150)),
+            ColorSequenceKeypoint.new(0.5, Color3.fromRGB(100, 220, 255)),
+            ColorSequenceKeypoint.new(0.67, Color3.fromRGB(150, 100, 255)),
+            ColorSequenceKeypoint.new(0.83, Color3.fromRGB(255, 100, 220)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 100, 150)),
+        }),
+    })
+    task.spawn(function()
+        local offset = 0
+        while stroke and stroke.Parent do
+            offset = (offset + 0.002) % 1
+            sGrad.Offset = Vector2.new(offset, 0)
+            RunService.Heartbeat:Wait()
+        end
+    end)
+    return stroke
+end
+function Rainbow.PulsingGlow(frame, color)
+    local glow = Util.Create("UIStroke", {
+        Parent = frame,
+        Color = color or CurrentTheme.Glow,
+        Thickness = 1.5,
+        Transparency = 0.5,
+    })
+    task.spawn(function()
+        while glow and glow.Parent do
+            Util.Tween(glow, {Transparency = 0.2, Thickness = 2.5}, 1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+            task.wait(1.5)
+            Util.Tween(glow, {Transparency = 0.7, Thickness = 1}, 1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+            task.wait(1.5)
+        end
+    end)
+    return glow
+end
+local CursorTrail = {}
+function CursorTrail.Create(screenGui)
+    local trails = {}
+    local maxParts = 14
+    local positions = {}
+    for i = 1, maxParts do
+        positions[i] = Vector2.new(0, 0)
+        local size = math.max(2, 14 - i)
+        local trail = Util.Create("Frame", {
+            Name = "Trail" .. i,
+            Parent = screenGui,
+            BackgroundColor3 = Util.LerpColor(CurrentTheme.GradientStart, CurrentTheme.GradientEnd, (i - 1) / (maxParts - 1)),
+            BackgroundTransparency = 0.2 + (i / maxParts) * 0.7,
+            Size = UDim2.new(0, size, 0, size),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            ZIndex = 99999 - i,
+        }, {
+            Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+        })
+        table.insert(trails, trail)
+    end
+    Util.Connect(RunService.RenderStepped, function()
+        positions[1] = Vector2.new(Mouse.X, Mouse.Y)
+        for i = #positions, 2, -1 do
+            positions[i] = positions[i]:Lerp(positions[i - 1], 0.28)
+        end
+        for i, trail in ipairs(trails) do
+            if trail and trail.Parent then
+                trail.Position = UDim2.new(0, positions[i].X, 0, positions[i].Y)
+                trail.BackgroundColor3 = Util.HSVShift(
+                    Util.LerpColor(CurrentTheme.GradientStart, CurrentTheme.GradientEnd, (i - 1) / (maxParts - 1)),
+                    (tick() * 0.15 + i * 0.04) % 1
+                )
+            end
+        end
+    end)
+    return trails
+end
+local Notify = {}
+Notify.Container = nil
+function Notify.Init(screenGui)
+    Notify.Container = Util.Create("Frame", {
+        Name = "Notifications",
+        Parent = screenGui,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(0, 330, 1, 0),
+        Position = UDim2.new(1, -350, 0, 0),
+        ZIndex = 50000,
+    }, {
+        Util.Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 8),
+            VerticalAlignment = Enum.VerticalAlignment.Bottom,
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+        }),
+        Util.Create("UIPadding", {
+            PaddingBottom = UDim.new(0, 25),
+            PaddingRight = UDim.new(0, 10),
+        })
+    })
+end
+function Notify.Send(config)
+    if not Notify.Container then return end
+    config = config or {}
+    local title = config.Title or "Notification"
+    local message = config.Message or ""
+    local duration = config.Duration or 4
+    local nType = config.Type or "Info"
+    local typeColors = {
+        Info = CurrentTheme.Info,
+        Success = CurrentTheme.Success,
+        Error = CurrentTheme.Error,
+        Warning = CurrentTheme.Warning,
+    }
+    local typeIcons = {
+        Info = "💜",
+        Success = "✅",
+        Error = "❌",
+        Warning = "⚠️",
+    }
+    local accent = typeColors[nType] or CurrentTheme.Primary
+    local icon = typeIcons[nType] or "💜"
+    Sound.Notify()
+    local notif = Util.Create("Frame", {
+        Name = "Notif",
+        Parent = Notify.Container,
+        BackgroundColor3 = CurrentTheme.Surface,
+        Size = UDim2.new(1, 0, 0, 0),
+        ClipsDescendants = true,
+        ZIndex = 50001,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 12)}),
+        Util.Create("UIStroke", {Color = accent, Thickness = 1.5, Transparency = 0.35}),
+    })
+    Util.Create("Frame", {
+        Parent = notif,
+        BackgroundColor3 = accent,
+        Size = UDim2.new(0, 4, 1, 0),
+        ZIndex = 50002,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 4)})
+    })
+    Util.Create("TextLabel", {
+        Parent = notif,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 18, 0, 10),
+        Size = UDim2.new(1, -30, 0, 20),
+        Text = icon .. "  " .. title,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 50002,
+    })
+    Util.Create("TextLabel", {
+        Parent = notif,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 18, 0, 32),
+        Size = UDim2.new(1, -30, 0, 35),
+        Text = message,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Top,
+        TextWrapped = true,
+        ZIndex = 50002,
+    })
+    local progress = Util.Create("Frame", {
+        Parent = notif,
+        BackgroundColor3 = accent,
+        BackgroundTransparency = 0.5,
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0, 0, 1, -2),
+        ZIndex = 50002,
+    })
+    Util.Spring(notif, {Size = UDim2.new(1, 0, 0, 78)}, 0.45)
+    task.wait(0.1)
+    Util.Tween(progress, {Size = UDim2.new(0, 0, 0, 2)}, duration, Enum.EasingStyle.Linear)
+    task.delay(duration, function()
+        Util.Tween(notif, {Size = UDim2.new(1, 0, 0, 0), BackgroundTransparency = 1}, 0.4)
+        task.wait(0.45)
+        if notif then notif:Destroy() end
+    end)
+end
+local Watermark = {}
+function Watermark.Create(screenGui, title)
+    local wmFrame = Util.Create("Frame", {
+        Name = "Watermark",
+        Parent = screenGui,
+        BackgroundColor3 = CurrentTheme.Background,
+        BackgroundTransparency = 0.25,
+        Size = UDim2.new(0, 280, 0, 30),
+        Position = UDim2.new(0, 15, 0, 15),
+        ZIndex = 40000,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+    })
+    Rainbow.AnimatedBorder(wmFrame, 1.5)
+    local wmLabel = Util.Create("TextLabel", {
+        Parent = wmFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -16, 1, 0),
+        Position = UDim2.new(0, 8, 0, 0),
+        Text = "🌸 " .. title,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 40001,
+    })
+    task.spawn(function()
+        local lastTick = tick()
+        local fps = 60
+        while wmFrame and wmFrame.Parent do
+            local now = tick()
+            fps = math.floor(1 / (now - lastTick))
+            lastTick = now
+            local timeStr = os.date("%I:%M:%S %p")
+            wmLabel.Text = string.format("🌸 %s  |  ⏰ %s  |  📊 %d FPS", title, timeStr, fps)
+            RunService.Heartbeat:Wait()
+        end
+    end)
+    return wmFrame
+end
+function FemboyUI.new(config)
+    config = config or {}
+    local self = setmetatable({}, FemboyUI)
+    self.Title = config.Title or "✨ Femboy UI ✨"
+    self.SubTitle = config.SubTitle or "The Ultimate Experience"
+    self.Theme = config.Theme or "Femboy"
+    self.WindowSize = config.Size or UDim2.new(0, 640, 0, 460)
+    self.EnableCursorTrail = config.CursorTrail ~= false
+    self.EnableParticles = config.Particles ~= false
+    self.EnableSounds = config.Sounds ~= false
+    self.EnableWatermark = config.Watermark ~= false
+    self.ConfigName = config.ConfigName or "FemboyUI"
+    self.ToggleKey = config.ToggleKey or Enum.KeyCode.RightControl
+    self.IsMobile = UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled
+    self.Responsive = config.Responsive ~= false
+    if Themes[self.Theme] then
+        CurrentTheme = Themes[self.Theme]
+    end
+    Sound.Enabled = self.EnableSounds
+    Config.FileName = self.ConfigName .. "_Config.json"
+    Config.Load()
+    self.Tabs = {}
+    self.ActiveTab = nil
+    self.Visible = true
+    self.Minimized = false
+    self:Build()
+    return self
+end
+function FemboyUI:GetResponsiveSize()
+    if not self.Responsive then return self.WindowSize end
+    local camera = workspace.CurrentCamera
+    local viewport = camera and camera.ViewportSize or Vector2.new(1280, 720)
+    local width = math.clamp(viewport.X - (self.IsMobile and 18 or 80), 300, self.WindowSize.X.Offset)
+    local height = math.clamp(viewport.Y - (self.IsMobile and 90 or 120), 300, self.WindowSize.Y.Offset)
+    return UDim2.new(0, width, 0, height)
+end
+function FemboyUI:ApplyResponsiveLayout()
+    if not self.Responsive or not self.MainFrame then return end
+    self.MainFrame.Size = self.Visible and self:GetResponsiveSize() or UDim2.new(0, 0, 0, 0)
+    if self.IsMobile and self.Sidebar then
+        self.Sidebar.Size = UDim2.new(0, 112, 1, -10)
+        self.TabContent.Position = UDim2.new(0, 122, 0, 5)
+        self.TabContent.Size = UDim2.new(1, -127, 1, -10)
+    end
+end
+function FemboyUI:Build()
+    pcall(function()
+        local old = GuiParent:FindFirstChild("FemboyUI_Main")
+        if old then old:Destroy() end
+    end)
+    self.ScreenGui = Util.Create("ScreenGui", {
+        Name = "FemboyUI_Main",
+        Parent = GuiParent,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        ResetOnSpawn = false,
+        DisplayOrder = 999,
+    })
+    self.MobileToggle = Util.Create("TextButton", {
+        Name = "MobileToggle",
+        Parent = self.ScreenGui,
+        AnchorPoint = Vector2.new(1, 1),
+        Position = UDim2.new(1, -16, 1, -16),
+        Size = UDim2.new(0, 52, 0, 52),
+        BackgroundColor3 = CurrentTheme.Accent,
+        BackgroundTransparency = 0.12,
+        Text = "🌸",
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 23,
+        AutoButtonColor = true,
+        Visible = self.IsMobile,
+        ZIndex = 500,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Primary, Thickness = 2, Transparency = 0.2}),
+    })
+    Util.Connect(self.MobileToggle.MouseButton1Click, function()
+        self:ToggleVisible()
+    end)
+    Notify.Init(self.ScreenGui)
+    if self.EnableCursorTrail then CursorTrail.Create(self.ScreenGui) end
+    if self.EnableWatermark then Watermark.Create(self.ScreenGui, self.Title) end
+    self.MainFrame = Util.Create("Frame", {
+        Name = "Window",
+        Parent = self.ScreenGui,
+        BackgroundColor3 = CurrentTheme.Background,
+        Size = UDim2.new(0, 0, 0, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ClipsDescendants = true,
+        ZIndex = 10,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 14)})
+    })
+    Rainbow.AnimatedBorder(self.MainFrame, 2)
+    if self.EnableParticles then
+        Particles.FloatingOrbs(self.MainFrame, 7)
+        Particles.Sparkles(self.MainFrame, 22)
+    end
+    self.TitleBar = Util.Create("Frame", {
+        Name = "TitleBar",
+        Parent = self.MainFrame,
+        BackgroundColor3 = CurrentTheme.BackgroundAlt,
+        BackgroundTransparency = 0.2,
+        Size = UDim2.new(1, 0, 0, 48),
+        ZIndex = 100,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 14)})
+    })
+    local tbGrad = Rainbow.AnimatedGradient(self.TitleBar)
+    self.TitleBar.BackgroundTransparency = 0.88
+    Util.Create("Frame", {
+        Parent = self.TitleBar,
+        BackgroundColor3 = CurrentTheme.Primary,
+        BackgroundTransparency = 0.7,
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 1, -1),
+        ZIndex = 101,
+    })
+    Util.Create("TextLabel", {
+        Parent = self.TitleBar,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 14, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Size = UDim2.new(0, 28, 0, 28),
+        Text = "🌸",
+        TextSize = 20,
+        ZIndex = 101,
+    })
+    Util.Create("TextLabel", {
+        Parent = self.TitleBar,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 44, 0, 5),
+        Size = UDim2.new(0.5, 0, 0, 20),
+        Text = self.Title,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 16,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 101,
+    })
+    Util.Create("TextLabel", {
+        Parent = self.TitleBar,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 44, 0, 25),
+        Size = UDim2.new(0.5, 0, 0, 14),
+        Text = self.SubTitle,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 10,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 101,
+    })
+    local closeBtn = self:MakeWinButton("✕", UDim2.new(1, -38, 0.5, 0), CurrentTheme.Error)
+    closeBtn.MouseButton1Click:Connect(function()
+        Sound.Close()
+        self:Destroy()
+    end)
+    local minBtn = self:MakeWinButton("─", UDim2.new(1, -68, 0.5, 0), CurrentTheme.Warning)
+    minBtn.MouseButton1Click:Connect(function()
+        Sound.Click()
+        self:ToggleMinimize()
+    end)
+    local pinBtn = self:MakeWinButton("📌", UDim2.new(1, -98, 0.5, 0), CurrentTheme.Info)
+    pinBtn.MouseButton1Click:Connect(function()
+        Sound.Click()
+        Notify.Send({Title = "Pinned!", Message = "Window is always on top.", Type = "Info", Duration = 2})
+    end)
+    self:EnableDrag(self.TitleBar)
+    self:ApplyResponsiveLayout()
+    if self.Responsive then
+        local camera = workspace.CurrentCamera
+        if camera then
+            Util.Connect(camera:GetPropertyChangedSignal("ViewportSize"), function()
+                self:ApplyResponsiveLayout()
+            end)
+        end
+    end
+    self.Content = Util.Create("Frame", {
+        Name = "Content",
+        Parent = self.MainFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, -48),
+        Position = UDim2.new(0, 0, 0, 48),
+        ZIndex = 50,
+        ClipsDescendants = true,
+    })
+    self.Sidebar = Util.Create("Frame", {
+        Name = "Sidebar",
+        Parent = self.Content,
+        BackgroundColor3 = CurrentTheme.BackgroundAlt,
+        BackgroundTransparency = 0.4,
+        Size = UDim2.new(0, 155, 1, -10),
+        Position = UDim2.new(0, 5, 0, 5),
+        ZIndex = 60,
+        ClipsDescendants = true,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 10)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Surface, Thickness = 1, Transparency = 0.5}),
+    })
+    local searchFrame = Util.Create("Frame", {
+        Parent = self.Sidebar,
+        BackgroundColor3 = CurrentTheme.Surface,
+        BackgroundTransparency = 0.3,
+        Size = UDim2.new(1, -14, 0, 28),
+        Position = UDim2.new(0, 7, 0, 7),
+        ZIndex = 61,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)})
+    })
+    local searchBox = Util.Create("TextBox", {
+        Parent = searchFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -10, 1, 0),
+        Position = UDim2.new(0, 22, 0, 0),
+        Text = "",
+        PlaceholderText = "🔍 Search tabs...",
+        PlaceholderColor3 = CurrentTheme.TextMuted,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ClearTextOnFocus = false,
+        ZIndex = 62,
+    })
+    self.TabList = Util.Create("ScrollingFrame", {
+        Name = "TabList",
+        Parent = self.Sidebar,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -14, 1, -78),
+        Position = UDim2.new(0, 7, 0, 40),
+        ScrollBarThickness = 2,
+        ScrollBarImageColor3 = CurrentTheme.Primary,
+        ScrollBarImageTransparency = 0.5,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ZIndex = 61,
+    }, {
+        Util.Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 3),
+        })
+    })
+    Util.Connect(searchBox:GetPropertyChangedSignal("Text"), function()
+        local query = searchBox.Text:lower()
+        for _, tab in ipairs(self.Tabs) do
+            if tab.Button then
+                local visible = query == "" or tab.Name:lower():find(query, 1, true)
+                tab.Button.Visible = visible and true or false
+            end
+        end
+    end)
+    local userFrame = Util.Create("Frame", {
+        Parent = self.Sidebar,
+        BackgroundColor3 = CurrentTheme.Surface,
+        BackgroundTransparency = 0.4,
+        Size = UDim2.new(1, -14, 0, 30),
+        Position = UDim2.new(0, 7, 1, -35),
+        ZIndex = 62,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)})
+    })
+    Util.Create("TextLabel", {
+        Parent = userFrame,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -12, 1, 0),
+        Position = UDim2.new(0, 8, 0, 0),
+        Text = "👤 " .. Player.Name,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 11,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        ZIndex = 63,
+    })
+    self.TabContent = Util.Create("Frame", {
+        Name = "TabContent",
+        Parent = self.Content,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -170, 1, -10),
+        Position = UDim2.new(0, 165, 0, 5),
+        ZIndex = 60,
+        ClipsDescendants = true,
+    })
+    self:ApplyResponsiveLayout()
+    Util.Connect(UserInputService.InputBegan, function(input, processed)
+        if not processed and input.KeyCode == self.ToggleKey then
+            self:ToggleVisible()
+        end
+    end)
+    Sound.Open()
+    task.wait(0.05)
+    Util.Spring(self.MainFrame, {Size = self:GetResponsiveSize()}, 0.65)
+    task.delay(1, function()
+        Notify.Send({
+            Title = "✨ Welcome!",
+            Message = "Femboy UI loaded! Press " .. self.ToggleKey.Name .. " to toggle.",
+            Type = "Success",
+            Duration = 5,
+        })
+    end)
+end
+function FemboyUI:MakeWinButton(text, pos, color)
+    local btn = Util.Create("TextButton", {
+        Parent = self.TitleBar,
+        BackgroundColor3 = color,
+        BackgroundTransparency = 0.82,
+        Size = UDim2.new(0, 24, 0, 24),
+        Position = pos,
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Text = text,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        AutoButtonColor = false,
+        ZIndex = 102,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)})
+    })
+    Util.Connect(btn.MouseEnter, function()
+        Util.Tween(btn, {BackgroundTransparency = 0.25, Size = UDim2.new(0, 26, 0, 26)}, 0.2)
+    end)
+    Util.Connect(btn.MouseLeave, function()
+        Util.Tween(btn, {BackgroundTransparency = 0.82, Size = UDim2.new(0, 24, 0, 24)}, 0.2)
+    end)
+    return btn
+end
+function FemboyUI:EnableDrag(frame)
+    local dragging, dragStart, startPos = false, nil, nil
+    Util.Connect(frame.InputBegan, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = self.MainFrame.Position
+            Util.Connect(input.Changed, function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    local dragInput
+    Util.Connect(frame.InputChanged, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    Util.Connect(UserInputService.InputChanged, function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            Util.Tween(self.MainFrame, {
+                Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+            }, 0.06, Enum.EasingStyle.Quad)
+        end
+    end)
+end
+function FemboyUI:CreateTab(config)
+    config = config or {}
+    local tabData = {
+        Name = config.Name or "Tab",
+        Icon = config.Icon or "📌",
+    }
+    local tabBtn = Util.Create("TextButton", {
+        Name = "Tab_" .. tabData.Name,
+        Parent = self.TabList,
+        BackgroundColor3 = CurrentTheme.Surface,
+        BackgroundTransparency = 0.75,
+        Size = UDim2.new(1, 0, 0, 36),
+        Text = "",
+        AutoButtonColor = false,
+        ZIndex = 62,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 9)})
+    })
+    local indicator = Util.Create("Frame", {
+        Parent = tabBtn,
+        BackgroundColor3 = CurrentTheme.Primary,
+        Size = UDim2.new(0, 3, 0.55, 0),
+        Position = UDim2.new(0, 0, 0.225, 0),
+        BackgroundTransparency = 1,
+        ZIndex = 63,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 4)})
+    })
+    local tabLabel = Util.Create("TextLabel", {
+        Parent = tabBtn,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, -14, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
+        Text = tabData.Icon .. "  " .. tabData.Name,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local tabPage = Util.Create("ScrollingFrame", {
+        Name = "Page_" .. tabData.Name,
+        Parent = self.TabContent,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, 0),
+        Visible = false,
+        ScrollBarThickness = 3,
+        ScrollBarImageColor3 = CurrentTheme.Primary,
+        ScrollBarImageTransparency = 0.4,
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y,
+        ZIndex = 61,
+    }, {
+        Util.Create("UIListLayout", {
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 5),
+        }),
+        Util.Create("UIPadding", {
+            PaddingTop = UDim.new(0, 4),
+            PaddingBottom = UDim.new(0, 4),
+            PaddingLeft = UDim.new(0, 4),
+            PaddingRight = UDim.new(0, 6),
+        })
+    })
+    tabData.Button = tabBtn
+    tabData.Page = tabPage
+    tabData.Indicator = indicator
+    tabData.Label = tabLabel
+    Util.Connect(tabBtn.MouseEnter, function()
+        if self.ActiveTab ~= tabData then
+            Util.Tween(tabBtn, {BackgroundTransparency = 0.45}, 0.2)
+        end
+    end)
+    Util.Connect(tabBtn.MouseLeave, function()
+        if self.ActiveTab ~= tabData then
+            Util.Tween(tabBtn, {BackgroundTransparency = 0.75}, 0.2)
+        end
+    end)
+    Util.Connect(tabBtn.MouseButton1Click, function()
+        Sound.Click()
+        self:SelectTab(tabData)
+    end)
+    table.insert(self.Tabs, tabData)
+    if #self.Tabs == 1 then
+        self:SelectTab(tabData)
+    end
+    local Tab = {}
+    Tab._data = tabData
+    Tab._lib = self
+    function Tab:CreateSection(c) return self._lib:MakeSection(self._data, c) end
+    function Tab:CreateButton(c) return self._lib:MakeButton(self._data, c) end
+    function Tab:CreateToggle(c) return self._lib:MakeToggle(self._data, c) end
+    function Tab:CreateSlider(c) return self._lib:MakeSlider(self._data, c) end
+    function Tab:CreateDropdown(c) return self._lib:MakeDropdown(self._data, c) end
+    function Tab:CreateTextbox(c) return self._lib:MakeTextbox(self._data, c) end
+    function Tab:CreateKeybind(c) return self._lib:MakeKeybind(self._data, c) end
+    function Tab:CreateColorPicker(c) return self._lib:MakeColorPicker(self._data, c) end
+    function Tab:CreateLabel(c) return self._lib:MakeLabel(self._data, c) end
+    function Tab:CreateParagraph(c) return self._lib:MakeParagraph(self._data, c) end
+    return Tab
+end
+function FemboyUI:SelectTab(tabData)
+    if self.ActiveTab then
+        local old = self.ActiveTab
+        old.Page.Visible = false
+        Util.Tween(old.Button, {BackgroundTransparency = 0.75}, 0.3)
+        Util.Tween(old.Indicator, {BackgroundTransparency = 1}, 0.3)
+        Util.Tween(old.Label, {TextColor3 = CurrentTheme.TextDim}, 0.3)
+    end
+    self.ActiveTab = tabData
+    tabData.Page.Visible = true
+    Util.Spring(tabData.Button, {BackgroundTransparency = 0.15}, 0.4)
+    Util.Spring(tabData.Indicator, {BackgroundTransparency = 0}, 0.4)
+    Util.Tween(tabData.Label, {TextColor3 = CurrentTheme.Text}, 0.3)
+end
+function FemboyUI:MakeElementFrame(tabData, height, name)
+    local frame = Util.Create("Frame", {
+        Name = name or "Element",
+        Parent = tabData.Page,
+        BackgroundColor3 = CurrentTheme.Surface,
+        BackgroundTransparency = 0.45,
+        Size = UDim2.new(1, 0, 0, height or 42),
+        ZIndex = 62,
+        ClipsDescendants = true,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 9)})
+    })
+    local stroke = Util.Create("UIStroke", {
+        Parent = frame,
+        Color = CurrentTheme.Primary,
+        Thickness = 1,
+        Transparency = 1,
+    })
+    Util.Connect(frame.MouseEnter, function()
+        Util.Tween(stroke, {Transparency = 0.55}, 0.25)
+        Util.Tween(frame, {BackgroundTransparency = 0.2, BackgroundColor3 = CurrentTheme.SurfaceHover}, 0.25)
+    end)
+    Util.Connect(frame.MouseLeave, function()
+        Util.Tween(stroke, {Transparency = 1}, 0.25)
+        Util.Tween(frame, {BackgroundTransparency = 0.45, BackgroundColor3 = CurrentTheme.Surface}, 0.25)
+    end)
+    return frame
+end
+function FemboyUI:MakeSection(tabData, config)
+    config = config or {}
+    local name = config.Name or "Section"
+    local frame = Util.Create("Frame", {
+        Parent = tabData.Page,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 26),
+        ZIndex = 62,
+    })
+    local lineL = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.Primary,
+        BackgroundTransparency = 0.55,
+        Size = UDim2.new(0.25, 0, 0, 1),
+        Position = UDim2.new(0, 5, 0.5, 0),
+        ZIndex = 63,
+    })
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0.27, 0, 0, 0),
+        Size = UDim2.new(0.46, 0, 1, 0),
+        Text = "✦ " .. name:upper() .. " ✦",
+        TextColor3 = CurrentTheme.Primary,
+        TextSize = 11,
+        Font = Enum.Font.GothamBold,
+        ZIndex = 63,
+    })
+    local lineR = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.Primary,
+        BackgroundTransparency = 0.55,
+        Size = UDim2.new(0.25, 0, 0, 1),
+        Position = UDim2.new(0.73, 0, 0.5, 0),
+        ZIndex = 63,
+    })
+    task.spawn(function()
+        while frame and frame.Parent do
+            Util.Tween(lineL, {BackgroundTransparency = 0.3}, 1.5)
+            Util.Tween(lineR, {BackgroundTransparency = 0.3}, 1.5)
+            task.wait(1.5)
+            Util.Tween(lineL, {BackgroundTransparency = 0.7}, 1.5)
+            Util.Tween(lineR, {BackgroundTransparency = 0.7}, 1.5)
+            task.wait(1.5)
+        end
+    end)
+    return frame
+end
+function FemboyUI:MakeButton(tabData, config)
+    config = config or {}
+    local name = config.Name or "Button"
+    local desc = config.Description
+    local callback = config.Callback or function() end
+    local height = desc and 56 or 42
+    local frame = self:MakeElementFrame(tabData, height, "Btn_" .. name)
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, desc and 5 or 0),
+        Size = UDim2.new(0.65, 0, 0, desc and 22 or 42),
+        Text = "🔹 " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    if desc then
+        Util.Create("TextLabel", {
+            Parent = frame,
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 28, 0, 27),
+            Size = UDim2.new(0.65, 0, 0, 16),
+            Text = desc,
+            TextColor3 = CurrentTheme.TextMuted,
+            TextSize = 10,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            ZIndex = 63,
+        })
+    end
+    local execBtn = Util.Create("TextButton", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.Primary,
+        BackgroundTransparency = 0.25,
+        Size = UDim2.new(0, 72, 0, 28),
+        Position = UDim2.new(1, -82, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Text = "Execute",
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        AutoButtonColor = false,
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)})
+    })
+    Rainbow.PulsingGlow(execBtn, CurrentTheme.Primary)
+    Util.Connect(execBtn.MouseEnter, function()
+        Util.Tween(execBtn, {BackgroundTransparency = 0.05, Size = UDim2.new(0, 76, 0, 30)}, 0.2)
+    end)
+    Util.Connect(execBtn.MouseLeave, function()
+        Util.Tween(execBtn, {BackgroundTransparency = 0.25, Size = UDim2.new(0, 72, 0, 28)}, 0.2)
+    end)
+    Util.Connect(execBtn.MouseButton1Click, function()
+        Sound.Click()
+        Util.Ripple(execBtn, Mouse.X, Mouse.Y)
+        Util.Tween(execBtn, {BackgroundColor3 = CurrentTheme.GradientEnd}, 0.1)
+        task.delay(0.15, function()
+            Util.Tween(execBtn, {BackgroundColor3 = CurrentTheme.Primary}, 0.3)
+        end)
+        pcall(callback)
+    end)
+    return frame
+end
+function FemboyUI:MakeToggle(tabData, config)
+    config = config or {}
+    local name = config.Name or "Toggle"
+    local default = config.Default or false
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    local desc = config.Description
+    if flag and Config.Get(flag) ~= nil then default = Config.Get(flag) end
+    local height = desc and 56 or 42
+    local frame = self:MakeElementFrame(tabData, height, "Toggle_" .. name)
+    local state = default
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, desc and 5 or 0),
+        Size = UDim2.new(0.65, 0, 0, desc and 22 or 42),
+        Text = "🔘 " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    if desc then
+        Util.Create("TextLabel", {
+            Parent = frame,
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 28, 0, 27),
+            Size = UDim2.new(0.65, 0, 0, 16),
+            Text = desc,
+            TextColor3 = CurrentTheme.TextMuted,
+            TextSize = 10,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            ZIndex = 63,
+        })
+    end
+    local switchBg = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = state and CurrentTheme.Primary or CurrentTheme.SurfaceAlt,
+        Size = UDim2.new(0, 46, 0, 24),
+        Position = UDim2.new(1, -58, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+    })
+    local knob = Util.Create("Frame", {
+        Parent = switchBg,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = state and UDim2.new(1, -22, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        ZIndex = 65,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+    })
+    local knobGlow = Util.Create("UIStroke", {
+        Parent = knob,
+        Color = CurrentTheme.Primary,
+        Thickness = state and 2 or 0,
+        Transparency = state and 0.3 or 1,
+    })
+    local function toggle()
+        state = not state
+        if state then
+            Util.Spring(knob, {Position = UDim2.new(1, -22, 0.5, 0)}, 0.4)
+            Util.Tween(switchBg, {BackgroundColor3 = CurrentTheme.Primary}, 0.3)
+            Util.Tween(knobGlow, {Thickness = 2, Transparency = 0.3}, 0.3)
+        else
+            Util.Spring(knob, {Position = UDim2.new(0, 2, 0.5, 0)}, 0.4)
+            Util.Tween(switchBg, {BackgroundColor3 = CurrentTheme.SurfaceAlt}, 0.3)
+            Util.Tween(knobGlow, {Thickness = 0, Transparency = 1}, 0.3)
+        end
+        if flag then Config.Set(flag, state) end
+        pcall(callback, state)
+    end
+    local clickArea = Util.Create("TextButton", {
+        Parent = switchBg,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, 0),
+        Text = "",
+        ZIndex = 66,
+    })
+    Util.Connect(clickArea.MouseButton1Click, function()
+        Sound.Toggle()
+        toggle()
+    end)
+    if default then pcall(callback, true) end
+    local obj = {}
+    function obj:Set(v) if v ~= state then toggle() end end
+    function obj:Get() return state end
+    return obj
+end
+function FemboyUI:MakeSlider(tabData, config)
+    config = config or {}
+    local name = config.Name or "Slider"
+    local min = config.Min or 0
+    local max = config.Max or 100
+    local default = config.Default or min
+    local increment = config.Increment or 1
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    local suffix = config.Suffix or ""
+    if flag and Config.Get(flag) ~= nil then default = Config.Get(flag) end
+    local frame = self:MakeElementFrame(tabData, 58, "Slider_" .. name)
+    local value = default
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 4),
+        Size = UDim2.new(0.6, 0, 0, 20),
+        Text = "📊 " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local valLabel = Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0.65, 0, 0, 4),
+        Size = UDim2.new(0.33, 0, 0, 20),
+        Text = tostring(value) .. suffix,
+        TextColor3 = CurrentTheme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Right,
+        ZIndex = 63,
+    })
+    local track = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.SurfaceAlt,
+        Size = UDim2.new(1, -24, 0, 8),
+        Position = UDim2.new(0, 12, 0, 36),
+        ZIndex = 63,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+    })
+    local pct = (default - min) / (max - min)
+    local fill = Util.Create("Frame", {
+        Parent = track,
+        BackgroundColor3 = CurrentTheme.Primary,
+        Size = UDim2.new(pct, 0, 1, 0),
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+    })
+    Rainbow.AnimatedGradient(fill)
+    local knobFrame = Util.Create("Frame", {
+        Parent = track,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(0, 16, 0, 16),
+        Position = UDim2.new(pct, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ZIndex = 65,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Primary, Thickness = 2, Transparency = 0.3})
+    })
+    local sliding = false
+    local function updateSlider(inputObj)
+        local trackX = track.AbsolutePosition.X
+        local trackW = track.AbsoluteSize.X
+        local mouseX = inputObj.Position.X
+        local p = math.clamp((mouseX - trackX) / trackW, 0, 1)
+        local raw = min + (max - min) * p
+        local snapped = math.floor(raw / increment + 0.5) * increment
+        snapped = math.clamp(snapped, min, max)
+        if increment >= 1 then snapped = math.floor(snapped) else snapped = tonumber(string.format("%.2f", snapped)) end
+        value = snapped
+        local newP = (snapped - min) / (max - min)
+        Util.Tween(fill, {Size = UDim2.new(newP, 0, 1, 0)}, 0.06, Enum.EasingStyle.Quad)
+        Util.Tween(knobFrame, {Position = UDim2.new(newP, 0, 0.5, 0)}, 0.06, Enum.EasingStyle.Quad)
+        valLabel.Text = tostring(snapped) .. suffix
+        if flag then Config.Set(flag, snapped) end
+        pcall(callback, snapped)
+    end
+    local inputArea = Util.Create("TextButton", {
+        Parent = track,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 12, 1, 22),
+        Position = UDim2.new(0, -6, 0, -11),
+        Text = "",
+        ZIndex = 66,
+    })
+    Util.Connect(inputArea.InputBegan, function(input)
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 and input.UserInputType ~= Enum.UserInputType.Touch then return end
+        sliding = true
+        updateSlider(input.UserInputType == Enum.UserInputType.Touch and input or {Position = Vector3.new(Mouse.X, Mouse.Y, 0)})
+    end)
+    Util.Connect(UserInputService.InputEnded, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then sliding = false end
+    end)
+    Util.Connect(UserInputService.InputChanged, function(input)
+        if sliding and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            updateSlider(input)
+        end
+    end)
+    pcall(callback, default)
+    local obj = {}
+    function obj:Set(v)
+        value = math.clamp(v, min, max)
+        local np = (value - min) / (max - min)
+        Util.Tween(fill, {Size = UDim2.new(np, 0, 1, 0)}, 0.3)
+        Util.Tween(knobFrame, {Position = UDim2.new(np, 0, 0.5, 0)}, 0.3)
+        valLabel.Text = tostring(value) .. suffix
+        if flag then Config.Set(flag, value) end
+        pcall(callback, value)
+    end
+    function obj:Get() return value end
+    return obj
+end
+function FemboyUI:MakeDropdown(tabData, config)
+    config = config or {}
+    local name = config.Name or "Dropdown"
+    local options = config.Options or {}
+    local default = config.Default
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    if flag and Config.Get(flag) ~= nil then default = Config.Get(flag) end
+    local frame = self:MakeElementFrame(tabData, 42, "Drop_" .. name)
+    local selected = default
+    local opened = false
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 0),
+        Size = UDim2.new(0.45, 0, 1, 0),
+        Text = "📋 " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local dropBtn = Util.Create("TextButton", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.SurfaceAlt,
+        BackgroundTransparency = 0.25,
+        Size = UDim2.new(0.5, -10, 0, 28),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Text = selected and tostring(selected) or "Select...",
+        TextColor3 = selected and CurrentTheme.Text or CurrentTheme.TextMuted,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextTruncate = Enum.TextTruncate.AtEnd,
+        AutoButtonColor = false,
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)})
+    })
+    local arrow = Util.Create("TextLabel", {
+        Parent = dropBtn,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(0, 18, 1, 0),
+        Position = UDim2.new(1, -20, 0, 0),
+        Text = "▾",
+        TextColor3 = CurrentTheme.Primary,
+        TextSize = 13,
+        Font = Enum.Font.GothamBold,
+        ZIndex = 65,
+    })
+    local optContainer = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.Surface,
+        Size = UDim2.new(1, -10, 0, 0),
+        Position = UDim2.new(0, 5, 1, 3),
+        ClipsDescendants = true,
+        Visible = false,
+        ZIndex = 300,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Primary, Thickness = 1, Transparency = 0.45}),
+        Util.Create("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 2)}),
+        Util.Create("UIPadding", {PaddingTop = UDim.new(0, 4), PaddingBottom = UDim.new(0, 4), PaddingLeft = UDim.new(0, 4), PaddingRight = UDim.new(0, 4)}),
+    })
+    local function makeOption(optText)
+        local optBtn = Util.Create("TextButton", {
+            Parent = optContainer,
+            BackgroundColor3 = CurrentTheme.SurfaceAlt,
+            BackgroundTransparency = 0.5,
+            Size = UDim2.new(1, 0, 0, 28),
+            Text = "  " .. tostring(optText),
+            TextColor3 = CurrentTheme.Text,
+            TextSize = 12,
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            AutoButtonColor = false,
+            ZIndex = 301,
+        }, {
+            Util.Create("UICorner", {CornerRadius = UDim.new(0, 6)})
+        })
+        Util.Connect(optBtn.MouseEnter, function()
+            Util.Tween(optBtn, {BackgroundTransparency = 0.15, BackgroundColor3 = CurrentTheme.Primary}, 0.2)
+        end)
+        Util.Connect(optBtn.MouseLeave, function()
+            Util.Tween(optBtn, {BackgroundTransparency = 0.5, BackgroundColor3 = CurrentTheme.SurfaceAlt}, 0.2)
+        end)
+        Util.Connect(optBtn.MouseButton1Click, function()
+            Sound.Click()
+            selected = optText
+            dropBtn.Text = tostring(optText)
+            dropBtn.TextColor3 = CurrentTheme.Text
+            opened = false
+            Util.Tween(frame, {Size = UDim2.new(1, 0, 0, 42)}, 0.3)
+            Util.Tween(arrow, {Rotation = 0}, 0.3)
+            task.delay(0.2, function() optContainer.Visible = false end)
+            if flag then Config.Set(flag, selected) end
+            pcall(callback, selected)
+        end)
+    end
+    for _, opt in ipairs(options) do makeOption(opt) end
+    Util.Connect(dropBtn.MouseButton1Click, function()
+        Sound.Click()
+        opened = not opened
+        if opened then
+            optContainer.Visible = true
+            local h = #options * 30 + 12
+            Util.Spring(frame, {Size = UDim2.new(1, 0, 0, 42 + h + 6)}, 0.4)
+            Util.Tween(arrow, {Rotation = 180}, 0.3)
+        else
+            Util.Tween(frame, {Size = UDim2.new(1, 0, 0, 42)}, 0.3)
+            Util.Tween(arrow, {Rotation = 0}, 0.3)
+            task.delay(0.25, function() optContainer.Visible = false end)
+        end
+    end)
+    if default then pcall(callback, default) end
+    local obj = {}
+    function obj:Set(v) selected = v; dropBtn.Text = tostring(v); dropBtn.TextColor3 = CurrentTheme.Text; pcall(callback, v) end
+    function obj:Get() return selected end
+    function obj:Refresh(newOpts)
+        for _, c in ipairs(optContainer:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
+        options = newOpts
+        for _, o in ipairs(options) do makeOption(o) end
+    end
+    return obj
+end
+function FemboyUI:MakeTextbox(tabData, config)
+    config = config or {}
+    local name = config.Name or "Textbox"
+    local default = config.Default or ""
+    local placeholder = config.Placeholder or "Type here..."
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    local clearOnFocus = config.ClearOnFocus or false
+    if flag and Config.Get(flag) ~= nil then default = Config.Get(flag) end
+    local frame = self:MakeElementFrame(tabData, 42, "Text_" .. name)
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 0),
+        Size = UDim2.new(0.4, 0, 1, 0),
+        Text = "✏️ " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local textBox = Util.Create("TextBox", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.SurfaceAlt,
+        BackgroundTransparency = 0.25,
+        Size = UDim2.new(0.55, -10, 0, 28),
+        Position = UDim2.new(0.45, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Text = default,
+        PlaceholderText = placeholder,
+        PlaceholderColor3 = CurrentTheme.TextMuted,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        ClearTextOnFocus = clearOnFocus,
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)}),
+        Util.Create("UIPadding", {PaddingLeft = UDim.new(0, 8), PaddingRight = UDim.new(0, 8)})
+    })
+    local tbStroke = Util.Create("UIStroke", {
+        Parent = textBox,
+        Color = CurrentTheme.SurfaceAlt,
+        Thickness = 1,
+        Transparency = 0.4,
+    })
+    Util.Connect(textBox.Focused, function()
+        Util.Tween(tbStroke, {Color = CurrentTheme.Primary, Transparency = 0}, 0.25)
+    end)
+    Util.Connect(textBox.FocusLost, function(enter)
+        Util.Tween(tbStroke, {Color = CurrentTheme.SurfaceAlt, Transparency = 0.4}, 0.25)
+        if flag then Config.Set(flag, textBox.Text) end
+        pcall(callback, textBox.Text, enter)
+    end)
+    local obj = {}
+    function obj:Set(v) textBox.Text = v; pcall(callback, v) end
+    function obj:Get() return textBox.Text end
+    return obj
+end
+function FemboyUI:MakeKeybind(tabData, config)
+    config = config or {}
+    local name = config.Name or "Keybind"
+    local default = config.Default or Enum.KeyCode.Unknown
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    local frame = self:MakeElementFrame(tabData, 42, "Key_" .. name)
+    local currentKey = default
+    local listening = false
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 0),
+        Size = UDim2.new(0.6, 0, 1, 0),
+        Text = "⌨️ " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local keyBtn = Util.Create("TextButton", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.SurfaceAlt,
+        BackgroundTransparency = 0.25,
+        Size = UDim2.new(0, 80, 0, 28),
+        Position = UDim2.new(1, -90, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Text = default.Name or "None",
+        TextColor3 = CurrentTheme.Primary,
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        AutoButtonColor = false,
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 7)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Primary, Thickness = 1, Transparency = 0.55})
+    })
+    Util.Connect(keyBtn.MouseButton1Click, function()
+        Sound.Click()
+        listening = true
+        keyBtn.Text = "..."
+        Util.Tween(keyBtn, {BackgroundColor3 = CurrentTheme.Primary}, 0.2)
+        keyBtn.TextColor3 = CurrentTheme.Background
+    end)
+    Util.Connect(UserInputService.InputBegan, function(input, processed)
+        if listening and input.UserInputType == Enum.UserInputType.Keyboard then
+            listening = false
+            currentKey = input.KeyCode
+            keyBtn.Text = input.KeyCode.Name
+            Util.Tween(keyBtn, {BackgroundColor3 = CurrentTheme.SurfaceAlt}, 0.3)
+            keyBtn.TextColor3 = CurrentTheme.Primary
+            if flag then Config.Set(flag, currentKey.Name) end
+        elseif not processed and not listening and input.KeyCode == currentKey then
+            pcall(callback, currentKey)
+        end
+    end)
+    local obj = {}
+    function obj:Set(k) currentKey = k; keyBtn.Text = k.Name end
+    function obj:Get() return currentKey end
+    return obj
+end
+function FemboyUI:MakeColorPicker(tabData, config)
+    config = config or {}
+    local name = config.Name or "Color"
+    local default = config.Default or Color3.fromRGB(255, 154, 206)
+    local callback = config.Callback or function() end
+    local flag = config.Flag
+    local frame = self:MakeElementFrame(tabData, 42, "Color_" .. name)
+    local currentColor = default
+    local opened = false
+    local h, s, v = default:ToHSV()
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 0),
+        Size = UDim2.new(0.6, 0, 1, 0),
+        Text = "🎨 " .. name,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 13,
+        Font = Enum.Font.GothamSemibold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local preview = Util.Create("TextButton", {
+        Parent = frame,
+        BackgroundColor3 = default,
+        Size = UDim2.new(0, 36, 0, 24),
+        Position = UDim2.new(1, -48, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5),
+        Text = "",
+        AutoButtonColor = false,
+        ZIndex = 64,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+        Util.Create("UIStroke", {Color = Color3.new(1, 1, 1), Thickness = 1.5, Transparency = 0.45})
+    })
+    local picker = Util.Create("Frame", {
+        Parent = frame,
+        BackgroundColor3 = CurrentTheme.Surface,
+        Size = UDim2.new(1, -10, 0, 0),
+        Position = UDim2.new(0, 5, 1, 3),
+        ClipsDescendants = true,
+        Visible = false,
+        ZIndex = 400,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 10)}),
+        Util.Create("UIStroke", {Color = CurrentTheme.Primary, Thickness = 1, Transparency = 0.45})
+    })
+    local svCanvas = Util.Create("Frame", {
+        Parent = picker,
+        BackgroundColor3 = Color3.fromHSV(h, 1, 1),
+        Size = UDim2.new(1, -20, 0, 70),
+        Position = UDim2.new(0, 10, 0, 10),
+        ZIndex = 401,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 6)})
+    })
+    Util.Create("Frame", {
+        Parent = svCanvas,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 402,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+        Util.Create("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1)})})
+    })
+    Util.Create("Frame", {
+        Parent = svCanvas,
+        BackgroundColor3 = Color3.new(0, 0, 0),
+        Size = UDim2.new(1, 0, 1, 0),
+        ZIndex = 403,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+        Util.Create("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 0)}), Rotation = 90})
+    })
+    local svCursor = Util.Create("Frame", {
+        Parent = svCanvas,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(0, 12, 0, 12),
+        Position = UDim2.new(s, 0, 1 - v, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ZIndex = 405,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(1, 0)}),
+        Util.Create("UIStroke", {Color = Color3.new(0, 0, 0), Thickness = 2})
+    })
+    local hueBar = Util.Create("Frame", {
+        Parent = picker,
+        BackgroundColor3 = Color3.new(1, 0, 0),
+        Size = UDim2.new(1, -20, 0, 16),
+        Position = UDim2.new(0, 10, 0, 86),
+        ZIndex = 401,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 5)}),
+        Util.Create("UIGradient", {
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+                ColorSequenceKeypoint.new(0.167, Color3.fromRGB(255, 255, 0)),
+                ColorSequenceKeypoint.new(0.333, Color3.fromRGB(0, 255, 0)),
+                ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 255, 255)),
+                ColorSequenceKeypoint.new(0.667, Color3.fromRGB(0, 0, 255)),
+                ColorSequenceKeypoint.new(0.833, Color3.fromRGB(255, 0, 255)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 0)),
+            })
+        })
+    })
+    local hueCursor = Util.Create("Frame", {
+        Parent = hueBar,
+        BackgroundColor3 = Color3.new(1, 1, 1),
+        Size = UDim2.new(0, 5, 1, 4),
+        Position = UDim2.new(h, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        ZIndex = 403,
+    }, {
+        Util.Create("UICorner", {CornerRadius = UDim.new(0, 3)}),
+        Util.Create("UIStroke", {Color = Color3.new(0, 0, 0), Thickness = 1})
+    })
+    local hexLabel = Util.Create("TextLabel", {
+        Parent = picker,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 16),
+        Position = UDim2.new(0, 0, 0, 106),
+        Text = Util.Hex(default),
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 11,
+        Font = Enum.Font.GothamBold,
+        ZIndex = 401,
+    })
+    local function updateColor()
+        currentColor = Color3.fromHSV(h, s, v)
+        preview.BackgroundColor3 = currentColor
+        svCanvas.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
+        svCursor.Position = UDim2.new(s, 0, 1 - v, 0)
+        hueCursor.Position = UDim2.new(h, 0, 0.5, 0)
+        hexLabel.Text = Util.Hex(currentColor)
+        if flag then Config.Set(flag, {R = currentColor.R, G = currentColor.G, B = currentColor.B}) end
+        pcall(callback, currentColor)
+    end
+    local svDrag, hueDrag = false, false
+    local svBtn = Util.Create("TextButton", {Parent = svCanvas, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, 0), Text = "", ZIndex = 406})
+    local hueBtn = Util.Create("TextButton", {Parent = hueBar, BackgroundTransparency = 1, Size = UDim2.new(1, 0, 1, 0), Text = "", ZIndex = 404})
+    Util.Connect(svBtn.InputBegan, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then svDrag = true end
+    end)
+    Util.Connect(hueBtn.InputBegan, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then hueDrag = true end
+    end)
+    Util.Connect(UserInputService.InputEnded, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then svDrag = false; hueDrag = false end
+    end)
+    Util.Connect(UserInputService.InputChanged, function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if svDrag then
+                local p = svCanvas.AbsolutePosition
+                local sz = svCanvas.AbsoluteSize
+                s = math.clamp((input.Position.X - p.X) / sz.X, 0, 1)
+                v = math.clamp(1 - (input.Position.Y - p.Y) / sz.Y, 0, 1)
+                updateColor()
+            elseif hueDrag then
+                local p = hueBar.AbsolutePosition
+                local sz = hueBar.AbsoluteSize
+                h = math.clamp((input.Position.X - p.X) / sz.X, 0, 1)
+                updateColor()
+            end
+        end
+    end)
+    Util.Connect(preview.MouseButton1Click, function()
+        Sound.Click()
+        opened = not opened
+        if opened then
+            picker.Visible = true
+            Util.Spring(frame, {Size = UDim2.new(1, 0, 0, 42 + 135)}, 0.4)
+        else
+            Util.Tween(frame, {Size = UDim2.new(1, 0, 0, 42)}, 0.3)
+            task.delay(0.25, function() picker.Visible = false end)
+        end
+    end)
+    pcall(callback, default)
+    local obj = {}
+    function obj:Set(c) currentColor = c; h, s, v = c:ToHSV(); updateColor() end
+    function obj:Get() return currentColor end
+    return obj
+end
+function FemboyUI:MakeLabel(tabData, config)
+    config = config or {}
+    local text = config.Text or "Label"
+    local label = Util.Create("TextLabel", {
+        Parent = tabData.Page,
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 22),
+        Text = "  💎 " .. text,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 62,
+    })
+    local obj = {}
+    function obj:Set(t) label.Text = "  💎 " .. t end
+    return obj
+end
+function FemboyUI:MakeParagraph(tabData, config)
+    config = config or {}
+    local title = config.Title or "Info"
+    local content = config.Content or ""
+    local frame = self:MakeElementFrame(tabData, 72, "Para_" .. title)
+    Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 5),
+        Size = UDim2.new(1, -24, 0, 20),
+        Text = "📄 " .. title,
+        TextColor3 = CurrentTheme.Text,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        ZIndex = 63,
+    })
+    local contentLabel = Util.Create("TextLabel", {
+        Parent = frame,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 12, 0, 27),
+        Size = UDim2.new(1, -24, 0, 38),
+        Text = content,
+        TextColor3 = CurrentTheme.TextDim,
+        TextSize = 11,
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = Enum.TextYAlignment.Top,
+        TextWrapped = true,
+        ZIndex = 63,
+    })
+    local obj = {}
+    function obj:Set(t, c)
+        if t then frame:FindFirstChild("TextLabel").Text = "📄 " .. t end
+        if c then contentLabel.Text = c end
+    end
+    return obj
+end
+function FemboyUI:ToggleVisible()
+    self.Visible = not self.Visible
+    if self.Visible then
+        self.ScreenGui.Enabled = true
+        if self.MobileToggle then self.MobileToggle.Visible = self.IsMobile end
+        Sound.Open()
+        Util.Spring(self.MainFrame, {Size = self.Minimized and UDim2.new(0, self:GetResponsiveSize().X.Offset, 0, 48) or self:GetResponsiveSize()}, 0.55)
+    else
+        Sound.Close()
+        Util.Tween(self.MainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+        if self.MobileToggle then self.MobileToggle.Visible = self.IsMobile end
+    end
+end
+function FemboyUI:ToggleMinimize()
+    self.Minimized = not self.Minimized
+    if self.Minimized then
+        Util.Tween(self.Content, {Size = UDim2.new(1, 0, 0, 0)}, 0.3)
+        Util.Spring(self.MainFrame, {Size = UDim2.new(0, self:GetResponsiveSize().X.Offset, 0, 48)}, 0.4)
+    else
+        Util.Spring(self.MainFrame, {Size = self:GetResponsiveSize()}, 0.5)
+        task.delay(0.2, function()
+            Util.Tween(self.Content, {Size = UDim2.new(1, 0, 1, -48)}, 0.3)
+        end)
+    end
+end
+function FemboyUI:SetTheme(themeName)
+    if Themes[themeName] then
+        CurrentTheme = Themes[themeName]
+        Notify.Send({
+            Title = "🎨 Theme Changed",
+            Message = "Switched to " .. themeName .. " theme! Restart UI for full effect.",
+            Type = "Info",
+            Duration = 3,
+        })
+    end
+end
+function FemboyUI:Notify(config)
+    Notify.Send(config)
+end
+function FemboyUI:Destroy()
+    Util.Tween(self.MainFrame, {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    Config.Save()
+    task.delay(0.55, function()
+        for _, conn in ipairs(AllConnections) do pcall(function() conn:Disconnect() end) end
+        if self.ScreenGui then self.ScreenGui:Destroy() end
+    end)
+end
+local Window = FemboyUI.new({
+    Title = "My Hub",
+})
+local Tab = Window:CreateTab({
+    Name = "Main",
+    Icon = "🏠",
+})
+Tab:CreateButton({
+    Name = "Test",
+    Callback = function()
+        print("Works!")
+    end,
+})
+return FemboyUI
